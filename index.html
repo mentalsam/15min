@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>15分タイマー</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f6f9;
+      color: #333;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100vh;
+      box-sizing: border-box;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      color: #2c3e50;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    #timer {
+      font-size: 3em;
+      font-weight: bold;
+      color: #16a085;
+      margin: 20px 0;
+    }
+
+    /* スマホ対応 */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2em;
+      }
+
+      #timer {
+        font-size: 2.5em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>15分タイマー</h1>
+  <div id="timer">15分 00秒</div>
+
+  <script>
+    var timeLeft = 15 * 60; // 15分 = 900秒
+    var timerInterval;
+
+    // タイマーの更新関数
+    function updateTimer() {
+      var minutes = Math.floor(timeLeft / 60);
+      var seconds = timeLeft % 60;
+      document.getElementById('timer').innerText = minutes + '分 ' + seconds + '秒';
+
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        alert("タイマー終了！");
+      } else {
+        timeLeft--;
+      }
+    }
+
+    // ページ読み込み時にタイマーが自動的にスタートする
+    window.onload = function() {
+      timerInterval = setInterval(updateTimer, 1000);
+    };
+  </script>
+</body>
+</html>
