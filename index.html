@@ -1,7 +1,5 @@
 <!DOCTYPE html>
 <html lang="ja">
-<!DOCTYPE html>
-<html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -58,7 +56,6 @@
       margin-bottom: 20px;
     }
 
-    /* スマホ対応 */
     @media (max-width: 600px) {
       h1 {
         font-size: 2em;
@@ -91,16 +88,40 @@
   <div id="end-time"></div>
 
   <script>
-    var timeLeft = 15 * 60; // 15分 = 900秒
+    var timeLeft;
     var timerInterval;
 
-    // 現在時刻から15分後の時刻を計算
-    var endTime = new Date();
-    endTime.setMinutes(endTime.getMinutes() + 15);
+    // ページ読み込み時に localStorage を確認
+    window.onload = function() {
+      var savedEndTime = localStorage.getItem('endTime');
+      if (savedEndTime) {
+        var now = new Date();
+        var endTime = new Date(savedEndTime);
 
-    // 15分後の時刻を表示
-    var endTimeElement = document.getElementById('end-time');
-    endTimeElement.innerText = 'カード無効時刻: ' + endTime.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        // 残り時間を計算
+        timeLeft = Math.floor((endTime - now) / 1000);
+
+        // 時間が過ぎている場合はリセット
+        if (timeLeft <= 0) {
+          timeLeft = 0;
+        }
+      } else {
+        // 初期値を設定（15分）
+        timeLeft = 15 * 60;
+
+        // 終了時刻を保存
+        var endTime = new Date();
+        endTime.setMinutes(endTime.getMinutes() + 15);
+        localStorage.setItem('endTime', endTime);
+      }
+
+      // 終了時刻を表示
+      var endTimeElement = document.getElementById('end-time');
+      endTimeElement.innerText = 'カード無効時刻: ' + new Date(localStorage.getItem('endTime')).toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+      // タイマーを開始
+      timerInterval = setInterval(updateTimer, 1000);
+    };
 
     // タイマーの更新関数
     function updateTimer() {
@@ -110,16 +131,14 @@
 
       if (timeLeft <= 0) {
         clearInterval(timerInterval);
-        alert('タイマー終了！時刻は ' + endTime.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' です。お戻りください。');
+        alert('タイマー終了！時刻は ' + new Date(localStorage.getItem('endTime')).toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' です。お戻りください。');
+
+        // localStorage をクリア
+        localStorage.removeItem('endTime');
       } else {
         timeLeft--;
       }
     }
-
-    // ページ読み込み時にタイマーが自動的にスタートする
-    window.onload = function() {
-      timerInterval = setInterval(updateTimer, 1000);
-    };
   </script>
 </body>
 </html>
