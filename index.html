@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
+<!DOCTYPE html>
+<html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -33,6 +35,29 @@
       margin: 20px 0;
     }
 
+    #end-time {
+      font-size: 1.5em;
+      color: #fff;
+      background-color: #3498db;
+      padding: 10px 15px;
+      border-radius: 8px;
+      display: inline-block;
+      margin-top: 15px;
+    }
+
+    .description {
+      font-size: 1.2em;
+      color: #555;
+      margin-top: 10px;
+    }
+
+    .warning {
+      font-size: 1.3em;
+      color: #e74c3c;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
     /* スマホ対応 */
     @media (max-width: 600px) {
       h1 {
@@ -42,26 +67,50 @@
       #timer {
         font-size: 2.5em;
       }
+
+      #end-time {
+        font-size: 1.2em;
+        padding: 8px 12px;
+      }
+
+      .description {
+        font-size: 1em;
+      }
+
+      .warning {
+        font-size: 1.1em;
+      }
     }
   </style>
 </head>
 <body>
   <h1>15分タイマー</h1>
+  <div class="warning">この表示から離れないでください。</div>
   <div id="timer">15分 00秒</div>
+  <div class="description">カードの有効残り時間をカウントしています。</div>
+  <div id="end-time"></div>
 
   <script>
     var timeLeft = 15 * 60; // 15分 = 900秒
     var timerInterval;
 
+    // 現在時刻から15分後の時刻を計算
+    var endTime = new Date();
+    endTime.setMinutes(endTime.getMinutes() + 15);
+
+    // 15分後の時刻を表示
+    var endTimeElement = document.getElementById('end-time');
+    endTimeElement.innerText = 'カード無効時刻: ' + endTime.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
     // タイマーの更新関数
     function updateTimer() {
       var minutes = Math.floor(timeLeft / 60);
       var seconds = timeLeft % 60;
-      document.getElementById('timer').innerText = minutes + '分 ' + seconds + '秒';
+      document.getElementById('timer').innerText = minutes + '分 ' + (seconds < 10 ? '0' : '') + seconds + '秒';
 
       if (timeLeft <= 0) {
         clearInterval(timerInterval);
-        alert("タイマー終了！");
+        alert('タイマー終了！時刻は ' + endTime.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' です。お戻りください。');
       } else {
         timeLeft--;
       }
