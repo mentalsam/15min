@@ -56,6 +56,21 @@
       margin-bottom: 20px;
     }
 
+    #stop-button {
+      font-size: 1.2em;
+      color: #fff;
+      background-color: #e74c3c;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    #stop-button:hover {
+      background-color: #c0392b;
+    }
+
     @media (max-width: 600px) {
       h1 {
         font-size: 2em;
@@ -77,6 +92,11 @@
       .warning {
         font-size: 1.1em;
       }
+
+      #stop-button {
+        font-size: 1em;
+        padding: 8px 16px;
+      }
     }
   </style>
 </head>
@@ -86,6 +106,7 @@
   <div id="timer">15分 00秒</div>
   <div class="description">カードの有効残り時間をカウントしています。</div>
   <div id="end-time"></div>
+  <button id="stop-button">席に戻りました</button>
 
   <script>
     var timeLeft;
@@ -139,6 +160,16 @@
         timeLeft--;
       }
     }
+
+    // 終了ボタンのクリックイベント
+    document.getElementById('stop-button').addEventListener('click', function() {
+      clearInterval(timerInterval);
+      localStorage.removeItem('endTime');
+      alert('ご利用ありがとうございました。');
+      document.getElementById('timer').innerText = 'ご利用ありがとうございました';
+      document.getElementById('end-time').innerText = '';
+    });
   </script>
 </body>
 </html>
+
