@@ -87,6 +87,7 @@
       font-weight: bold;
       color: #16a085;
       margin: 20px 0;
+      visibility: hidden; /* タイマーを最初は非表示に */
     }
 
     #end-time {
@@ -123,8 +124,12 @@
       border-radius: 8px;
       cursor: pointer;
       margin-top: 20px;
-      margin-bottom: 40px;
+      margin-bottom: 5px;
       transition: background-color 0.3s ease;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
     }
 
     #stop-button:hover {
@@ -273,7 +278,8 @@
   <div id="timer">15分 00秒</div>
   <div class="description">カードの有効残り時間をカウントしています。</div>
   <div id="end-time"></div>
-  <button id="stop-button">席に戻りました</button>
+  <button id="stop-button" onmousedown="return false">席に戻りました</button>
+  <div class="description" style="margin-top: 2px;">席に戻られた際は、こちらのボタンを押してください</div>
 
   <div class="rules-section">
     <h2>店舗ルールと禁止事項</h2>
@@ -380,7 +386,9 @@
     function updateTimer() {
       var minutes = Math.floor(timeLeft / 60);
       var seconds = timeLeft % 60;
-      document.getElementById('timer').innerText = minutes + '分 ' + (seconds < 10 ? '0' : '') + seconds + '秒';
+      var timerElement = document.getElementById('timer');
+      timerElement.innerText = minutes + '分 ' + (seconds < 10 ? '0' : '') + seconds + '秒';
+      timerElement.style.visibility = 'visible'; // タイマーを表示
 
       if (timeLeft <= 0) {
         clearInterval(timerInterval);
@@ -416,12 +424,17 @@
 
     // 終了ボタンのクリックイベント
     document.getElementById('stop-button').addEventListener('click', function() {
-      clearInterval(timerInterval);
-      localStorage.removeItem('endTime');
-      alert('ご利用ありがとうございました。');
-      document.getElementById('timer').innerText = 'ご利用ありがとうございました';
-      document.getElementById('end-time').innerText = '';
+      var result = confirm('本当に席に戻りましたか？');
+      if (result) {
+        clearInterval(timerInterval);
+        localStorage.removeItem('endTime');
+        timeLeft = 15 * 60;
+        document.getElementById('timer').innerText = 'ご利用ありがとうございました';
+        document.getElementById('end-time').innerText = '';
+      } else {
+        location.reload();
+      }
     });
   </script>
-</body>
+</body>　
 </html>
