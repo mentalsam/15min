@@ -138,7 +138,7 @@
 
       // 終了時刻を表示
       var endTimeElement = document.getElementById('end-time');
-      endTimeElement.innerText = 'カード無効時刻: ' + new Date(localStorage.getItem('endTime')).toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      endTimeElement.innerText = 'この時刻までにお戻りください: ' + new Date(localStorage.getItem('endTime')).toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
       // タイマーを開始
       timerInterval = setInterval(updateTimer, 1000);
