@@ -6,7 +6,7 @@
   <title>15分タイマー</title>
   <style>
     body {
-      font-family: 'Arial', sans-serif;
+      font-family: 'Arial', 'Hiragino Sans', sans-serif;
       background-color: #f4f6f9;
       color: #333;
       text-align: center;
@@ -19,11 +19,56 @@
       box-sizing: border-box;
     }
 
+    .header {
+      background: linear-gradient(135deg, #3498db, #2c3e50);
+      color: white;
+      padding: 20px 0;
+      margin-bottom: 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .title-section {
+      background: rgba(52, 152, 219, 0.1);
+      padding: 20px 0;
+      margin-bottom: 30px;
+      border-bottom: 3px solid #3498db;
+    }
+
+    .main-title {
+      font-size: 2.2em;
+      color: #2c3e50;
+      margin: 0;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+
+    #current-datetime {
+      font-size: 1.5em;
+      color: #fff;
+      margin: 10px 0;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .date-part {
+      background: rgba(255,255,255,0.1);
+      padding: 8px 15px;
+      border-radius: 8px;
+      margin: 5px;
+    }
+
     h1 {
       font-size: 2.5em;
-      color: #2c3e50;
-      margin-bottom: 20px;
+      color: #fff;
+      margin: 0;
+      padding: 20px 0;
       font-weight: 600;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
     }
 
     .subtitle {
@@ -79,6 +124,7 @@
       cursor: pointer;
       margin-top: 20px;
       margin-bottom: 40px;
+      transition: background-color 0.3s ease;
     }
 
     #stop-button:hover {
@@ -130,6 +176,36 @@
       font-size: 0.9em;
     }
 
+    .last-updated {
+      text-align: center;
+      color: #888;
+      font-size: 0.8em;
+      margin-top: 10px;
+    }
+
+    .important-notice {
+      background-color: #ffebee;
+      border: 3px solid #ff5252;
+      padding: 20px;
+      margin: 30px auto;
+      max-width: 600px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .important-notice h3 {
+      color: #d32f2f;
+      font-size: 1.6em;
+      margin-bottom: 15px;
+    }
+
+    .important-notice p {
+      color: #c62828;
+      font-size: 1.2em;
+      line-height: 1.8;
+      margin: 0;
+    }
+
     @media (max-width: 600px) {
       h1 {
         font-size: 2em;
@@ -138,6 +214,14 @@
       .subtitle {
         font-size: 1.2em;
         margin: -10px 0 20px;
+      }
+
+      #current-datetime {
+        font-size: 1.2em;
+      }
+
+      .date-part {
+        padding: 5px 10px;
       }
 
       #timer {
@@ -178,7 +262,12 @@
   </style>
 </head>
 <body>
-  <h1>15分タイマー</h1>
+  <div class="header">
+    <div id="current-datetime"></div>
+  </div>
+  <div class="title-section">
+    <h1 class="main-title">15分タイマー</h1>
+  </div>
   <div class="subtitle">本カードの有効期限は15分です</div>
   <div class="warning">この表示から離れないでください。</div>
   <div id="timer">15分 00秒</div>
@@ -213,16 +302,41 @@
     <p>皆様のご理解とご協力をお願い申し上げます。</p>
   </div>
 
+  <div class="important-notice">
+    <h3>【重要なお知らせ】</h3>
+    <p>兵庫県の青少年愛護条例に基づき、16歳未満のお客様は午後6時以降、保護者の同伴が必要です。<br>
+    また、身分証明書のご提示がない場合、同伴者の確認ができませんので、ご入店をお断りさせていただく場合がございます。<br>
+    ご理解とご協力をお願い申し上げます。</p>
+  </div>
+
   <div class="footer-signature">
     NICOPA昆陽店 従業員一同
   </div>
+  <div class="last-updated">最終更新日：2024年1月23日 15:30</div>
 
   <script>
     var timeLeft;
     var timerInterval;
 
+    // 現在の日時を表示する関数
+    function updateCurrentDateTime() {
+      var now = new Date();
+      var days = ['日', '月', '火', '水', '木', '金', '土'];
+      var dateStr = '<span class="date-part">' + now.getFullYear() + '年' + 
+                    (now.getMonth() + 1) + '月' + 
+                    now.getDate() + '日' + '</span>' +
+                    '<span class="date-part">（' + days[now.getDay()] + '曜日）</span>' +
+                    '<span class="date-part">' + 
+                    now.getHours().toString().padStart(2, '0') + ':' + 
+                    now.getMinutes().toString().padStart(2, '0') + '</span>';
+      document.getElementById('current-datetime').innerHTML = dateStr;
+    }
+
     // ページ読み込み時に localStorage を確認
     window.onload = function() {
+      updateCurrentDateTime();
+      setInterval(updateCurrentDateTime, 1000);
+
       var savedEndTime = localStorage.getItem('endTime');
       if (savedEndTime) {
         var now = new Date();
@@ -233,7 +347,10 @@
 
         // 時間が過ぎている場合はリセット
         if (timeLeft <= 0) {
-          timeLeft = 0;
+          timeLeft = 15 * 60;
+          var newEndTime = new Date();
+          newEndTime.setMinutes(newEndTime.getMinutes() + 15);
+          localStorage.setItem('endTime', newEndTime);
         }
       } else {
         // 初期値を設定（15分）
@@ -246,12 +363,18 @@
       }
 
       // 終了時刻を表示
-      var endTimeElement = document.getElementById('end-time');
-      endTimeElement.innerText = 'この時刻までにお戻りください：' + new Date(localStorage.getItem('endTime')).toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+      updateEndTimeDisplay();
 
       // タイマーを開始
       timerInterval = setInterval(updateTimer, 1000);
     };
+
+    // 終了時刻の表示を更新する関数
+    function updateEndTimeDisplay() {
+      var endTimeElement = document.getElementById('end-time');
+      endTimeElement.innerText = 'この時刻までにお戻りください：' + 
+        new Date(localStorage.getItem('endTime')).toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+    }
 
     // タイマーの更新関数
     function updateTimer() {
@@ -269,6 +392,27 @@
         timeLeft--;
       }
     }
+
+    // ページの可視性が変更された時のイベントリスナー
+    document.addEventListener('visibilitychange', function() {
+      if (!document.hidden) {
+        // ページが表示された時に時間を再計算
+        var savedEndTime = localStorage.getItem('endTime');
+        if (savedEndTime) {
+          var now = new Date();
+          var endTime = new Date(savedEndTime);
+          timeLeft = Math.floor((endTime - now) / 1000);
+
+          if (timeLeft <= 0) {
+            timeLeft = 15 * 60;
+            var newEndTime = new Date();
+            newEndTime.setMinutes(newEndTime.getMinutes() + 15);
+            localStorage.setItem('endTime', newEndTime);
+            updateEndTimeDisplay();
+          }
+        }
+      }
+    });
 
     // 終了ボタンのクリックイベント
     document.getElementById('stop-button').addEventListener('click', function() {
