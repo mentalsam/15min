@@ -62,15 +62,6 @@
       margin: 5px;
     }
 
-    h1 {
-      font-size: 2.5em;
-      color: #fff;
-      margin: 0;
-      padding: 20px 0;
-      font-weight: 600;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-    }
-
     .subtitle {
       font-size: 1.5em;
       color: #3498db;
@@ -331,6 +322,7 @@
     NICOPA昆陽店 従業員一同
   </div>
   <div class="last-updated">最終更新日：2024年1月23日 15:30</div>
+  <div class="visitor-count" style="font-size: 0.8em; color: #ccc; text-align: center;"><span id="visitor-count">0</span></div>
 
   <script>
     var timeLeft;
@@ -350,10 +342,25 @@
       document.getElementById('current-datetime').innerHTML = dateStr;
     }
 
-    // ページ読み込み時に localStorage を確認
+    // 訪問者数を更新する関数
+    function updateVisitorCount() {
+      var today = new Date().toISOString().split('T')[0]; // 今日の日付を取得
+      var visitorCountKey = 'visitorCount_' + today; // 今日の訪問者数のキー
+      var visitorCount = sessionStorage.getItem(visitorCountKey) || 0;
+
+      // 1端末1日1カウントの制限
+      if (visitorCount == 0) {
+        visitorCount++;
+        sessionStorage.setItem(visitorCountKey, visitorCount);
+      }
+      document.getElementById('visitor-count').innerText = visitorCount;
+    }
+
+    // ページ読み込み時に sessionStorage を確認
     window.onload = function() {
       updateCurrentDateTime();
       setInterval(updateCurrentDateTime, 1000);
+      updateVisitorCount();
 
       var savedEndTime = localStorage.getItem('endTime');
       if (savedEndTime) {
