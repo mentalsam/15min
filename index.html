@@ -454,6 +454,18 @@
         location.reload();
       }
     });
+
+    // ページがリロードされた場合の訪問者数カウントを防ぐ
+    window.addEventListener('beforeunload', function() {
+      sessionStorage.setItem('visitorCountPrevented', 'true');
+    });
+
+    // ページが読み込まれた際に、リロードによるカウントを防ぐ
+    if (sessionStorage.getItem('visitorCountPrevented')) {
+      sessionStorage.removeItem('visitorCountPrevented');
+    } else {
+      updateVisitorCount();
+    }
   </script>
 </body>　
 </html>
