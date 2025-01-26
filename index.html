@@ -339,13 +339,12 @@
     NICOPA昆陽店 従業員一同
   </div>
   <div class="last-updated">最終更新日：2025年1月23日 15:30</div>
-  <div class="visitor-count">訪問者数: <span id="visitor-count">0</span></div>
+  <div class="visitor-count"><span id="visitor-count">0</span></div>
 
   <script>
     var timeLeft;
     var timerInterval;
     var visitorCount = 0; // 訪問者数を0に設定
-    document.getElementById('visitor-count').innerText = visitorCount;
 
     // 現在の日時を表示する関数
     function updateCurrentDateTime() {
@@ -368,6 +367,14 @@
 
       // 訪問者数をカウント
       visitorCount++;
+      document.getElementById('visitor-count').innerText = visitorCount;
+
+      // 訪問者数を localStorage に保存
+      var storedCount = localStorage.getItem('visitorCount');
+      if (storedCount) {
+        visitorCount = parseInt(storedCount) + 1; // 既存のカウントに1を加算
+      }
+      localStorage.setItem('visitorCount', visitorCount);
       document.getElementById('visitor-count').innerText = visitorCount;
 
       var savedEndTime = localStorage.getItem('endTime');
