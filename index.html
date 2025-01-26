@@ -202,9 +202,11 @@
     }
 
     .visitor-count {
-      font-size: 1em;
-      color: #666;
+      text-align: center;
+      color: #999; /* 色を薄くして目立たなくする */
+      font-size: 0.8em; /* フォントサイズを小さくする */
       margin-top: 10px;
+      opacity: 0.7; /* 透明度を下げて目立たなくする */
     }
 
     .important-notice {
@@ -336,13 +338,14 @@
   <div class="footer-signature">
     NICOPA昆陽店 従業員一同
   </div>
-  <div class="last-updated">最終更新日：2024年1月23日 15:30</div>
+  <div class="last-updated">最終更新日：2025年1月23日 15:30</div>
   <div class="visitor-count">訪問者数: <span id="visitor-count">0</span></div>
 
   <script>
     var timeLeft;
     var timerInterval;
-    var visitorCount = 0;
+    var visitorCount = 0; // 訪問者数を0に設定
+    document.getElementById('visitor-count').innerText = visitorCount;
 
     // 現在の日時を表示する関数
     function updateCurrentDateTime() {
@@ -362,6 +365,10 @@
     window.onload = function() {
       updateCurrentDateTime();
       setInterval(updateCurrentDateTime, 1000);
+
+      // 訪問者数をカウント
+      visitorCount++;
+      document.getElementById('visitor-count').innerText = visitorCount;
 
       var savedEndTime = localStorage.getItem('endTime');
       if (savedEndTime) {
@@ -393,10 +400,6 @@
 
       // タイマーを開始
       timerInterval = setInterval(updateTimer, 1000);
-
-      // 訪問者数をカウント
-      visitorCount++;
-      document.getElementById('visitor-count').innerText = visitorCount;
     };
 
     // 終了時刻の表示を更新する関数
